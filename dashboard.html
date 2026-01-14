@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard</title>
+
+<style>
+/* Layout */
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background-color: #eef1f6;
+    display: flex;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 230px;
+    background: #1e1e1e;
+    height: 100vh;
+    padding: 20px;
+    color: white;
+    position: fixed;
+}
+
+.sidebar h2 {
+    margin-bottom: 30px;
+    text-align: center;
+    color: #f9a33f;
+}
+
+.sidebar a {
+    display: block;
+    padding: 12px 15px;
+    color: white;
+    text-decoration: none;
+    margin-bottom: 10px;
+    border-radius: 6px;
+}
+
+.sidebar a:hover {
+    background: #333;
+}
+
+/* Main content */
+.main {
+    margin-left: 230px;
+    padding: 30px;
+    width: 100%;
+}
+
+.header {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    margin-bottom: 25px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 26px;
+    color: #1e1e1e;
+}
+
+/* Filters */
+.filters {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.filters input, .filters select {
+    padding: 10px;
+    font-size: 15px;
+    width: 48%;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+/* Table Container */
+.table-box {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+    overflow-x: auto;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background: #1e1e1e;
+    color: white;
+    padding: 12px;
+    text-align: left;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+tr:hover td {
+    background-color: #f8f8f8;
+}
+
+/* Download Button */
+.download-btn {
+    padding: 7px 12px;
+    background: #3498db;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+.download-btn:hover {
+    background: #1b6fa3;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .filters input, .filters select {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h2>ADMIN PANEL</h2>
+    <a href="#">Dashboard</a>
+    <a href="#">Students</a>
+    <a href="#">Admissions</a>
+    <a href="#">Settings</a>
+</div>
+
+<!-- Main Content -->
+<div class="main">
+    
+    <div class="header">
+        <h1>Student Database</h1>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+        <input type="text" id="searchInput" placeholder="Search by name, phone, email...">
+        
+        <select id="classFilter">
+            <option value="">Filter by Class</option>
+            <option>1</option><option>2</option><option>3</option><option>4</option>
+            <option>5</option><option>6</option><option>7</option><option>8</option>
+            <option>9</option><option>10</option>
+        </select>
+    </div>
+
+    <!-- Student Table Box -->
+    <div class="table-box">
+        <table id="studentTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>DOB</th>
+                    <th>Gender</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Class</th>
+                    <th>Certificate</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- DATA WILL LOAD HERE -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<script>
+async function loadStudents() {
+    const res = await fetch("/students");
+    const students = await res.json();
+    displayData(students);
+
+    // Search filter
+    document.getElementById("searchInput").addEventListener("input", function () {
+        const txt = this.value.toLowerCase();
+        const filtered = students.filter(s =>
+            (s.first_name + " " + s.last_name).toLowerCase().includes(txt) ||
+            s.phone.includes(txt) ||
+            s.email.toLowerCase().includes(txt)
+        );
+        displayData(filtered);
+    });
+
+    // Class filter
+    document.getElementById("classFilter").addEventListener("change", function () {
+        const selected = this.value;
+        const filtered = selected ? students.filter(s => s.admission_class == selected) : students;
+        displayData(filtered);
+    });
+}
+
+function displayData(data) {
+    const tbody = document.querySelector("#studentTable tbody");
+    tbody.innerHTML = "";
+
+    data.forEach(s => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${s.first_name} ${s.last_name}</td>
+            <td>${s.dob}</td>
+            <td>${s.gender}</td>
+            <td>${s.phone}</td>
+            <td>${s.email}</td>
+            <td>${s.admission_class}</td>
+            <td>${s.passing_certificate ? `<a class="download-btn" href="${s.passing_certificate}" target="_blank">Download</a>` : "No File"}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+loadStudents();
+</script>
+
+</body>
+</html>
+
+
