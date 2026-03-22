@@ -48,7 +48,7 @@ A full-stack web application for managing student records. This system allows ad
 ### 1. Clone the Repository
 
 ```
-git clone https://github.com/your-username/your-repository-name.git
+git clone https://github.com/divmehta093-sudo/admission_management
 ```
 
 ### 2. Navigate to the Project Folder
