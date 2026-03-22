@@ -93,12 +93,6 @@ Ensure the database connection details in `server.js` are correct:
 
 ---
 
-## Screenshots
-
-Add screenshots of the application here (login page, dashboard, student form, etc.).
-
----
-
 ## Future Improvements
 
 * Edit and delete student records
