@@ -54,7 +54,7 @@ git clone https://github.com/divmehta093-sudo/admission_management
 ### 2. Navigate to the Project Folder
 
 ```
-cd your-repository-name
+cd admission_management
 ```
 
 ### 3. Install Dependencies
